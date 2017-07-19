@@ -1,4 +1,4 @@
-s3-mess
+stress3
 =======
 
 This is a set of C++ programs in order to benchmark an S3-compatible object storage.

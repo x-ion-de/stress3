@@ -1,8 +1,8 @@
 for i in 1 2 3; do
  date
- ./create_buckets
+ ./create_buckets 
  ./test_put
- ./test_get
+ ./test_get_rand
  ./test_copy
  ./test_delete_copy
  ./test_delete

@@ -1,0 +1,11 @@
+access_key: access
+secret_key: secret
+host: s3-endpoint.example.com
+timeout: 20000
+retries: 5
+bucket_count: 100
+bucket_name: bucket_name_%04d
+object_count: 1000
+object_read_count: 100000
+obj_size: 256
+thread_count: 2

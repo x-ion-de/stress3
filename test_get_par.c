@@ -67,11 +67,11 @@ void read_bucket(int tid) {
             if (global_bucket_id > bucket_count) break;
             std::cout << "Thread " << tid << " starting with bucket " << b << std::endl;
         }
-        sprintf(bucket, bucket_name, b);
+        sprintf(bucket, bucket_name, b + bucket_offset);
 	etime.reserve(etime.capacity() + object_count);
 
         for (i=0; i<object_count; i++) {
-	    sprintf(key, "obj%04d", i);
+            sprintf(key, "obj%04d", i + object_offset);
 
 	    std::chrono::steady_clock::time_point begin1 = std::chrono::steady_clock::now();
 	    do {

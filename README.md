@@ -26,9 +26,11 @@ All parameters are read from a file called ```config.yaml``` in the current dire
 - retries: How often to retry a failed request.
 - bucket_count: How many buckets to create/use.
 - bucket_name: A template for the name of the buckets.
+- bucket_offset: Where to start counting buckets.
 - object_count: How many objects to create/use.
+- object_offset: Where to start counting objects.
 - object_read_count: How many objects to read per thread when doing random reads.
-- obj_size: Size of the objects to be created in kBytes.
+- object_size: Size of the objects to be created in kBytes.
 - thread_count: How many threads to create when doing random reads.
 
 These programs are available:

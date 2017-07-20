@@ -5,7 +5,9 @@ timeout: 20000
 retries: 5
 bucket_count: 100
 bucket_name: bucket_name_%04d
+bucket_offset: 0
 object_count: 1000
+object_offset: 0
 object_read_count: 100000
-obj_size: 256
+object_size: 256
 thread_count: 2

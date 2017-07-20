@@ -30,14 +30,14 @@ void read_bucket(int tid, std::vector<double> *etime) {
 
     S3BucketContext bucketContext =
     {
-	0,
-	bucket,
-	S3ProtocolHTTP,
-	S3UriStylePath,
-	access_key,
-	secret_key,
-	0,
-	NULL
+    0,
+    bucket,
+    S3ProtocolHTTP,
+    S3UriStylePath,
+    access_key,
+    secret_key,
+    0,
+    NULL
     };
 
 
@@ -63,20 +63,20 @@ void read_bucket(int tid, std::vector<double> *etime) {
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
     for (i=0; i<object_read_count; i++) {
-            sprintf(bucket, bucket_name, bucket_dist(generator));
-	    sprintf(key, "obj%04d", object_dist(generator));
+        sprintf(bucket, bucket_name, bucket_dist(generator) + bucket_offset);
+        sprintf(key, "obj%04d", object_dist(generator) + object_offset);
 
-	    std::chrono::steady_clock::time_point begin1 = std::chrono::steady_clock::now();
-	    do {
+        std::chrono::steady_clock::time_point begin1 = std::chrono::steady_clock::now();
+        do {
                 S3_get_object(&bucketContext, key, &getConditions, 0,
                               0, 0, 0, &getObjectHandler, NULL);
-	    } while (S3_status_is_retryable(statusG) && should_retry());
-	    std::chrono::steady_clock::time_point end1 = std::chrono::steady_clock::now();
+        } while (S3_status_is_retryable(statusG) && should_retry());
+        std::chrono::steady_clock::time_point end1 = std::chrono::steady_clock::now();
             etime->at(i) = std::chrono::duration_cast<std::chrono::duration<double>>(end1 - begin1).count();
 
-	    if (statusG != S3StatusOK) {
-		printError();
-	    }
+        if (statusG != S3StatusOK) {
+        printError();
+        }
     }
 
     std::chrono::steady_clock::time_point end= std::chrono::steady_clock::now();
@@ -98,7 +98,7 @@ int main() {
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     for (tid=0; tid<thread_count; tid++) {
-	etimes[tid] = new std::vector<double>(object_read_count);
+    etimes[tid] = new std::vector<double>(object_read_count);
         ts[tid] = std::thread(read_bucket, tid, etimes[tid]);
     }
 

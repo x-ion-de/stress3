@@ -38,9 +38,9 @@ int main() {
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     for (b=0; b<bucket_count; b++) {
-        sprintf(bucket, bucket_name, b);
+        sprintf(bucket, bucket_name, b + bucket_offset);
         for (i=0; i<object_count; i++) {
-	    sprintf(key, "obj%04d", i);
+            sprintf(key, "obj%04d", i + object_offset);
 
             std::chrono::steady_clock::time_point begin1 = std::chrono::steady_clock::now();
 	    do {

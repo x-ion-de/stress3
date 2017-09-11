@@ -55,5 +55,28 @@ The output of each program will contain a couple of statistics about the times s
 - PQ9 time: 99.99th percentile of the times spent for each request, in Milliseconds.
 - Max time: Maximum of the times spent for each request, in Milliseconds.
 
+## Run it in docker swarm
 
+To run this in docker swarm first create your swarm following this guide:
+https://docs.docker.com/engine/swarm/swarm-mode/
 
+After you have create your swarm, copy the config.yaml from this repo, modify it
+with the proper credentials and add it like described here:
+https://docs.docker.com/engine/swarm/configs/#how-docker-manages-configs
+
+```
+docker config create config.yaml config.yaml
+```
+
+Now you can start a full run like this:
+
+```
+docker service create --name stress3 --config config.yaml cloudbau/stress3 sh -c "/opt/stress3/create_config.sh; cd /opt/stress3/; ./create_buckets; sleep 300; ./test_put; sleep 300; ./test_get_rand; sleep 300; ./test_delete; sleep 300; ./delete_buckets; sleep 7200"; docker service scale stress3=100
+```
+
+###WARNING:
+Please note, that you should always add the delete actions for what your create
+in the same command, since docker containers in swarm will be automatically
+recreated to align with the "scale" you defined. Since the bucket names are
+derived from the hostnames of the containers, you can only delete them from the
+original container.

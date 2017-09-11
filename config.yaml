@@ -4,7 +4,7 @@ host: s3-endpoint.example.com
 timeout: 20000
 retries: 5
 bucket_count: 100
-bucket_name: bucket_name_%04d
+HOSTNAME
 bucket_offset: 0
 object_count: 1000
 object_offset: 0

@@ -1,14 +1,13 @@
-#include <libs3.h>
+// Copyright 2017 x-ion GmbH
+#include <stdlib.h>
+#include <unistd.h>
 #include <chrono>
 #include <cstring>
 #include <mutex>
 #include <thread>
 #include <string>
-#include <stdlib.h>
 #include <iostream>
 #include <fstream>
-#include <unistd.h>
-#include "yaml-cpp/yaml.h"
 #include "util.h"
 
 int global_bucket_id = 0;
@@ -28,6 +27,8 @@ void read_bucket(int tid) {
     int64_t ifModifiedSince = -1, ifNotModifiedSince = -1;
     const char *ifMatch = 0, *ifNotMatch = 0;
     std::vector<double> etime;
+    RateLimiterInterface* limiter = new RateLimiter(max_ops_per_second);
+    double wait_time = 0.0;
 
     int b, i;
 
@@ -42,7 +43,6 @@ void read_bucket(int tid) {
 	0,
 	NULL
     };
-
 
     S3GetConditions getConditions =
     {
@@ -73,6 +73,7 @@ void read_bucket(int tid) {
         for (i=0; i<object_count; i++) {
             sprintf(key, "obj%04d", i + object_offset);
 
+            wait_time += limiter->aquire();
 	    std::chrono::steady_clock::time_point begin1 = std::chrono::steady_clock::now();
 	    do {
                 S3_get_object(&bucketContext, key, &getConditions, 0,
@@ -89,6 +90,7 @@ void read_bucket(int tid) {
 
     std::chrono::steady_clock::time_point end= std::chrono::steady_clock::now();
     double elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - begin).count();
+    std::cout << "Total waiting time = " << wait_time << std::endl;
     print_timings(elapsed_seconds, etime);
 
 }

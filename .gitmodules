@@ -1,0 +1,6 @@
+[submodule "src/ratelimiter"]
+	path = src/ratelimiter
+	url = https://github.com/x-ion-de/ratelimiter.git
+[submodule "src/yaml-cpp"]
+	path = src/yaml-cpp
+	url = https://github.com/x-ion-de/yaml-cpp.git

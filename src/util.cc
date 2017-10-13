@@ -1,15 +1,15 @@
-#include <libs3.h>
+// Copyright 2017 x-ion GmbH
+#include "util.h"
+#include <stdlib.h>
+#include <unistd.h>
 #include <chrono>
 #include <cstring>
 #include <string>
-#include <stdlib.h>
 #include <iostream>
 #include <fstream>
-#include <unistd.h>
 #include <vector>
-#include <algorithm> // std::min_element
-#include <iterator>  // std::begin, std::end
-#include "yaml-cpp/yaml.h"
+#include <algorithm>  // std::min_element
+#include <iterator>   // std::begin, std::end
 
 char access_key[256];
 char secret_key[256];
@@ -18,6 +18,7 @@ char bucket_name[256];
 int bucket_count, bucket_offset = 0;
 int object_count, object_offset = 0;
 int object_read_count, thread_count;
+int max_ops_per_second;
 uint64_t contentLength;
 int timeoutMsG;
 int retriesG;
@@ -36,7 +37,36 @@ void responseCompleteCallback(
                 const S3ErrorDetails *error,
                 void *callbackData)
 {
-        return;
+    (void) callbackData;
+
+    statusG = status;
+    // Compose the error details message now, although we might not use it.
+    // Can't just save a pointer to [error] since it's not guaranteed to last
+    // beyond this callback
+    int len = 0;
+    if (error && error->message) {
+        len += snprintf(&(errorDetailsG[len]), sizeof(errorDetailsG) - len,
+                        "  Message: %s\n", error->message);
+    }
+    if (error && error->resource) {
+        len += snprintf(&(errorDetailsG[len]), sizeof(errorDetailsG) - len,
+                        "  Resource: %s\n", error->resource);
+    }
+    if (error && error->furtherDetails) {
+        len += snprintf(&(errorDetailsG[len]), sizeof(errorDetailsG) - len,
+                        "  Further Details: %s\n", error->furtherDetails);
+    }
+    if (error && error->extraDetailsCount) {
+        len += snprintf(&(errorDetailsG[len]), sizeof(errorDetailsG) - len,
+                        "%s", "  Extra Details:\n");
+        int i;
+        for (i = 0; i < error->extraDetailsCount; i++) {
+            len += snprintf(&(errorDetailsG[len]),
+                            sizeof(errorDetailsG) - len, "    %s: %s\n",
+                            error->extraDetails[i].name,
+                            error->extraDetails[i].value);
+        }
+    }
 }
 
 S3ResponseHandler responseHandler =
@@ -46,8 +76,7 @@ S3ResponseHandler responseHandler =
 };
 
 
-void S3_init(void)
-{
+void S3_init(void) {
     S3Status status;
 
     if ((status = S3_initialize("s3-mess 0.1", S3_INIT_ALL, host))
@@ -59,8 +88,7 @@ void S3_init(void)
 }
 
 
-void printError()
-{
+void printError() {
     if (statusG < S3StatusErrorAccessDenied) {
         fprintf(stderr, "\nERROR: %s\n", S3_get_status_name(statusG));
     }
@@ -70,8 +98,7 @@ void printError()
     }
 }
 
-int should_retry()
-{
+int should_retry() {
     if (retriesG--) {
         // Sleep before next retry; start out with a 1 second sleep
         static int retrySleepInterval = 1;
@@ -85,17 +112,8 @@ int should_retry()
 }
 
 
-typedef struct put_object_callback_data
-{
-    uint64_t contentLength, originalContentLength;
-    uint64_t totalContentLength, totalOriginalContentLength;
-    int noStatus;
-} put_object_callback_data;
-
-
 int putObjectDataCallback(int bufferSize, char *buffer,
-                                 void *callbackData)
-{
+                          void *callbackData) {
     put_object_callback_data *data =
         (put_object_callback_data *) callbackData;
 
@@ -116,8 +134,7 @@ int metaPropertiesCount = 0;
 S3NameValue metaProperties[S3_MAX_METADATA_COUNT];
 char useServerSideEncryption = 0;
 
-S3PutProperties putProperties =
-{
+S3PutProperties putProperties = {
     contentType,
     md5,
     cacheControl,
@@ -143,6 +160,7 @@ void read_config(void) {
     object_count = config["object_count"].as<int>();
     object_offset = config["object_offset"].as<int>();
     object_read_count = config["object_read_count"].as<int>();
+    max_ops_per_second = config["max_ops_per_second"].as<int>();
     thread_count = config["thread_count"].as<int>();
     timeoutMsG = config["timeout"].as<int>();
     retriesG = config["retries"].as<int>();

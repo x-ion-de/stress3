@@ -1,24 +1,35 @@
-CC=g++
-CFLAGS=-std=c++11 -I ../yaml-cpp/include/ -O
-LDLIBS=-ls3 ../yaml-cpp/build/libyaml-cpp.a -lpthread
-PROGRAMS = test_delete test_delete_copy test_get_par test_get_rand test_put create_buckets delete_buckets
+# Copyright 2017 x-ion GmbH
+CXX      = g++
+CPPFLAGS = -std=c++11 -I src/yaml-cpp/include -I src/ratelimiter/src -g -Wall
+LDLIBS   = -ls3 -lpthread
+LDFLAGS  = -g
+PROGRAMS = test_copy test_delete test_delete_copy test_get test_get_par test_get_rand test_put create_buckets delete_buckets
+BINDIR   = bin
+SRCDIR   = src
+OBJDIR   = obj
+TARGETS := $(PROGRAMS:%=$(BINDIR)/%)
 
-all: $(PROGRAMS)
+all: $(TARGETS)
 .PHONY: all
 
-test_get_par.o test_get_rand.o test_put.o create_buckets.o delete_buckets.o: util.h
+SOURCES  := $(wildcard $(SRCDIR)/*.cc)
+INCLUDES := $(wildcard $(SRCDIR)/*.h)
+OBJECTS  =  $(OBJDIR)/util.o $(OBJDIR)/rate_limiter.o $(OBJDIR)/libyaml-cpp.a
 
-test_delete: test_delete.o util.o
+ALLOBJECTS := $(SOURCES:$(SRCDIR)/%.cc=$(OBJDIR)/%.o)
 
-test_delete_copy: test_delete_copy.o util.o
+$(OBJDIR)/rate_limiter.o: src/ratelimiter/src/rate_limiter.cpp src/ratelimiter/src/*.hpp
+	$(CXX) $(CPPFLAGS) -c $< -o $@
 
-test_get_par: test_get_par.o util.o
+$(OBJDIR)/libyaml-cpp.a:
+	mkdir -p src/yaml-cpp/build
+	cd src/yaml-cpp/build; cmake ..
+	$(MAKE) -C src/yaml-cpp/build
+	mv src/yaml-cpp/build/libyaml-cpp.a $(OBJDIR)
 
-test_get_rand: test_get_rand.o util.o
+$(ALLOBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.cc $(INCLUDES)
+	$(CXX) $(CPPFLAGS) -c $< -o $@
 
-test_put: test_put.o util.o
-
-create_buckets: create_buckets.o util.o
-
-delete_buckets: delete_buckets.o util.o
+$(BINDIR)/%: $(OBJDIR)/%.o $(OBJECTS)
+	$(CXX) $(LDFLAGS) $^ $(LDLIBS) -o $@
 

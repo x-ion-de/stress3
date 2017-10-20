@@ -79,7 +79,7 @@ docker config create config.yaml config.yaml
 Now you can start a full run like this:
 
 ```
-docker service create --name stress3 --config config.yaml cloudbau/stress3 sh -c "/opt/stress3/create_config.sh; cd /opt/stress3; bin/create_buckets; sleep 300; bin/test_put; sleep 300; bin/test_get_rand; sleep 300; bin/test_delete; sleep 300; bin/delete_buckets; sleep 7200"; docker service scale stress3=100
+docker service create --name stress3 --config config.yaml cloudbau/stress3 sh -c "/opt/stress3/tools/create_config.sh; cd /opt/stress3; bin/create_buckets; sleep 300; bin/test_put; sleep 300; bin/test_get_rand; sleep 300; bin/test_delete; sleep 300; bin/delete_buckets; sleep 7200"; docker service scale stress3=100
 ```
 
 ###WARNING:

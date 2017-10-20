@@ -20,8 +20,6 @@ static S3Status getObjectDataCallback(int bufferSize, const char *buffer,
 }
 
 void read_bucket(int tid) {
-    int64_t lastModified;
-    char eTag[256];
     char bucket[256];
     char key[256];
     int64_t ifModifiedSince = -1, ifNotModifiedSince = -1;

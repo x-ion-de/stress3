@@ -10,7 +10,7 @@ extern char access_key[256];
 extern char secret_key[256];
 extern char host[256];
 extern char bucket_name[256];
-extern int bucket_count, bucket_offset;
+extern int bucket_count, bucket_list_count, bucket_offset;
 extern int object_count, object_offset, object_read_count, thread_count;
 extern int max_ops_per_second;
 extern uint64_t contentLength;

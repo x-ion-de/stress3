@@ -4,6 +4,7 @@ host: host.example.org
 timeout: 20000
 retries: 5
 bucket_count: 10
+bucket_list_count: 100
 bucket_name: HOSTNAME_%04d
 bucket_offset: 0
 max_ops_per_second: 100

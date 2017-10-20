@@ -1,6 +1,6 @@
-access_key: YAB77R70QJTVX4G5S1QY
-secret_key: V3X0revhjlGvEE60baC5JsPO1xHWOLQGhDqD4g8L
-host: de-dev-hh-1.s3.xws.x-ion.de
+access_key: access
+secret_key: secret
+host: host.example.org
 timeout: 20000
 retries: 5
 bucket_count: 10

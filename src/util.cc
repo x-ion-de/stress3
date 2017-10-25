@@ -15,7 +15,7 @@ char access_key[256];
 char secret_key[256];
 char host[256];
 char bucket_name[256];
-int bucket_count, bucket_offset = 0;
+int bucket_count, bucket_list_count, bucket_offset = 0;
 int object_count, object_offset = 0;
 int object_read_count, thread_count;
 int max_ops_per_second;
@@ -156,6 +156,7 @@ void read_config(void) {
     std::strcpy(bucket_name, config["bucket_name"].as<std::string>().c_str());
     contentLength = config["object_size"].as<uint64_t>() * 1024;
     bucket_count = config["bucket_count"].as<int>();
+    bucket_list_count = config["bucket_list_count"].as<int>();
     bucket_offset = config["bucket_offset"].as<int>();
     object_count = config["object_count"].as<int>();
     object_offset = config["object_offset"].as<int>();

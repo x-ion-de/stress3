@@ -15,8 +15,6 @@ int main() {
     read_config();
     S3_init();
 
-    int64_t lastModified;
-    char eTag[256];
     char bucket[256];
     char key[256];
 

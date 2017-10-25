@@ -3,7 +3,7 @@ CXX      = g++
 CPPFLAGS = -std=c++11 -I src/yaml-cpp/include -I src/ratelimiter/src -g -Wall
 LDLIBS   = -ls3 -lpthread
 LDFLAGS  = -g
-PROGRAMS = test_copy test_delete test_delete_copy test_get test_get_par test_get_rand test_put create_buckets delete_buckets
+PROGRAMS = test_copy test_delete test_delete_copy test_get test_get_par test_get_rand test_put create_buckets delete_buckets list_buckets_rand
 BINDIR   = bin
 SRCDIR   = src
 OBJDIR   = obj

@@ -32,7 +32,7 @@ void read_objects(int tid, std::vector<double> *etime) {
     S3BucketContext bucketContext = {
         0,
         bucket,
-        S3ProtocolHTTP,
+        s3proto,
         S3UriStylePath,
         access_key,
         secret_key,

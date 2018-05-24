@@ -29,7 +29,7 @@ int main() {
         wait_time += limiter->aquire();
         std::chrono::steady_clock::time_point begin1 = std::chrono::steady_clock::now();
         do {
-            S3_create_bucket(S3ProtocolHTTP, access_key, secret_key, 0, host,
+            S3_create_bucket(s3proto, access_key, secret_key, 0, host,
                              bucket, NULL, cannedAcl, locationConstraint,
                              0, 0, &responseHandler, 0);
         } while (S3_status_is_retryable(statusG) && should_retry());

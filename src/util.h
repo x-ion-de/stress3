@@ -19,6 +19,7 @@ extern int retriesG;
 extern S3Status statusG;
 extern char errorDetailsG[4096];
 extern S3CannedAcl cannedAcl;
+extern S3Protocol s3proto;
 
 S3Status responsePropertiesCallback(
                 const S3ResponseProperties *properties,

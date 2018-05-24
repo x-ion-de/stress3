@@ -24,6 +24,7 @@ int timeoutMsG;
 int retriesG;
 S3Status statusG = S3StatusOK;
 char errorDetailsG[4096] = { 0 };
+S3Protocol s3proto = S3ProtocolHTTP;
 
 S3Status responsePropertiesCallback(
                 const S3ResponseProperties *properties,
@@ -165,6 +166,13 @@ void read_config(void) {
     thread_count = config["thread_count"].as<int>();
     timeoutMsG = config["timeout"].as<int>();
     retriesG = config["retries"].as<int>();
+    if (config["use_ssl"].as<int>() > 0) {
+        s3proto = S3ProtocolHTTPS;
+        std::cout << "Using SSL" << std::endl;
+    } else {
+        s3proto = S3ProtocolHTTP;
+        std::cout << "Not using SSL" << std::endl;
+    }
 }
 
 template<class RandAccessIter>

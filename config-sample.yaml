@@ -1,6 +1,7 @@
 access_key: access
 secret_key: secret
 host: host.example.org
+use_ssl: 0
 timeout: 20000
 retries: 5
 bucket_count: 10

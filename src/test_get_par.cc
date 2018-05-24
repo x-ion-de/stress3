@@ -34,7 +34,7 @@ void read_bucket(int tid) {
     {
 	0,
 	bucket,
-	S3ProtocolHTTP,
+	s3proto,
 	S3UriStylePath,
 	access_key,
 	secret_key,

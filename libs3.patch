@@ -5,10 +5,10 @@ index c81537c..ab1324e 100644
 @@ -136,7 +136,7 @@ ifndef CFLAGS
      endif
  endif
-
+ 
 -CFLAGS += -Wall -Werror -Wshadow -Wextra \
 +CFLAGS += -Wall -Werror -Wshadow -Wextra -Wno-format-truncation \
-                  -Iinc \
+ 		  -Iinc \
            $(CURL_CFLAGS) $(LIBXML2_CFLAGS) \
            -DLIBS3_VER_MAJOR=\"$(LIBS3_VER_MAJOR)\" \
 diff --git a/src/request.c b/src/request.c
@@ -17,12 +17,12 @@ index 63174d0..090da42 100644
 +++ b/src/request.c
 @@ -44,7 +44,7 @@
  #endif
-
+ 
  #define USER_AGENT_SIZE 256
 -#define REQUEST_STACK_SIZE 32
 +#define REQUEST_STACK_SIZE 256
  #define SIGNATURE_SCOPE_SIZE 64
-
+ 
  //#define SIGNATURE_DEBUG
 @@ -1223,12 +1223,14 @@ static S3Status setup_curl(Request *request,
          snprintf(header, sizeof(header), "Content-Length: %llu",
@@ -37,6 +37,5 @@ index 63174d0..090da42 100644
                                               "Transfer-Encoding:");
 +        request->headers = curl_slist_append(request->headers, "Expect:");
      }
-
+ 
      append_standard_header(hostHeader);
-

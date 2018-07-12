@@ -29,20 +29,20 @@ static S3Status listBucketCallback(int isTruncated, const char *nextMarker,
         (list_bucket_callback_data *) callbackData;
 
     data->isTruncated = isTruncated;
-    // This is tricky.  S3 doesn't return the NextMarker if there is no                                                                                                                                           g
-    // delimiter.  Why, I don't know, since it's still useful for paging                                                                                                                                          g
-    // through results.  We want NextMarker to be the last content in the                                                                                                                                         g
-    // list, so set it to that if necessary.                                                                                                                                                                      g
-    if ((!nextMarker || !nextMarker[0]) && contentsCount) {                                                                                                                                                       g
-        nextMarker = contents[contentsCount - 1].key;                                                                                                                                                             g
-    }                                                                                                                                                                                                             g
-    if (nextMarker) {                                                                                                                                                                                             g
-        snprintf(data->nextMarker, sizeof(data->nextMarker), "%s",                                                                                                                                                g
-                 nextMarker);                                                                                                                                                                                     g
-    }                                                                                                                                                                                                             g
-    else {                                                                                                                                                                                                        g
-        data->nextMarker[0] = 0;                                                                                                                                                                                  g
-    }                                                                                                                                                                                                             g
+    // This is tricky.  S3 doesn't return the NextMarker if there is no
+    // delimiter.  Why, I don't know, since it's still useful for paging
+    // through results.  We want NextMarker to be the last content in the
+    // list, so set it to that if necessary.
+    if ((!nextMarker || !nextMarker[0]) && contentsCount) {
+        nextMarker = contents[contentsCount - 1].key;
+    }
+    if (nextMarker) {
+        snprintf(data->nextMarker, sizeof(data->nextMarker), "%s",
+                 nextMarker);
+    }
+    else {
+        data->nextMarker[0] = 0;
+    }
 
     data->keyCount += contentsCount;
 

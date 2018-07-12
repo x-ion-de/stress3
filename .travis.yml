@@ -1,0 +1,11 @@
+sudo: true
+dist: xenial
+jobs:
+  include:
+  - stage: build docker image
+    script:
+      #    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - docker build -t stress3 .
+    - docker images
+      #    - docker tag stress3 $DOCKER_USERNAME/stress3
+      #    - docker push $DOCKER_USERNAME/stress3

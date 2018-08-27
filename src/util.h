@@ -20,6 +20,8 @@ extern S3Status statusG;
 extern char errorDetailsG[4096];
 extern S3CannedAcl cannedAcl;
 extern S3Protocol s3proto;
+extern int metaPropertiesCount;
+extern S3NameValue metaProperties[S3_MAX_METADATA_COUNT];
 
 S3Status responsePropertiesCallback(
                 const S3ResponseProperties *properties,

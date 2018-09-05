@@ -79,6 +79,9 @@ int main() {
 		printError();
 		errorCount++;
 	    }
+            // Reset retry counter and timer
+            retriesG = baseretries;
+            retrySleepInterval = 1;
         }
     }
 

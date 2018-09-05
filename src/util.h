@@ -15,7 +15,7 @@ extern int object_count, object_offset, object_read_count, thread_count;
 extern int max_ops_per_second;
 extern uint64_t contentLength;
 extern int timeoutMsG;
-extern int retriesG;
+extern int baseretries, retriesG, retrySleepInterval;
 extern S3Status statusG;
 extern char errorDetailsG[4096];
 extern S3CannedAcl cannedAcl;

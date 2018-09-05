@@ -58,6 +58,9 @@ S3BucketContext bucketContext =
                 printError();
                 errorCount++;
             }
+            // Reset retry counter and timer
+            retriesG = baseretries;
+            retrySleepInterval = 1;
         }
     }
 

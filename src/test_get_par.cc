@@ -83,6 +83,9 @@ void read_bucket(int tid) {
 	    if (statusG != S3StatusOK) {
 		printError();
 	    }
+            // Reset retry counter and timer
+            retriesG = baseretries;
+            retrySleepInterval = 1;
         }
     }
 

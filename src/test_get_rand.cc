@@ -77,6 +77,9 @@ void read_objects(int tid, std::vector<double> *etime) {
             printError();
             errorCount++;
         }
+        // Reset retry counter and timer
+        retriesG = baseretries;
+        retrySleepInterval = 1;
     }
 
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();

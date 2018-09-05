@@ -21,7 +21,8 @@ int object_read_count, thread_count;
 int max_ops_per_second;
 uint64_t contentLength;
 int timeoutMsG;
-int retriesG;
+int baseretries, retriesG;
+int retrySleepInterval = 1;
 S3Status statusG = S3StatusOK;
 char errorDetailsG[4096] = { 0 };
 S3Protocol s3proto = S3ProtocolHTTP;
@@ -101,11 +102,8 @@ void printError() {
 
 int should_retry() {
     if (retriesG--) {
-        // Sleep before next retry; start out with a 1 second sleep
-        static int retrySleepInterval = 1;
-        sleep(retrySleepInterval);
-        // Next sleep 1 second longer
-        retrySleepInterval++;
+        // Sleep before next retry; next sleep 1 second longer
+        sleep(retrySleepInterval++);
         return 1;
     }
 
@@ -115,9 +113,6 @@ int should_retry() {
 
 int putObjectDataCallback(int bufferSize, char *buffer,
                           void *callbackData) {
-    put_object_callback_data *data =
-        (put_object_callback_data *) callbackData;
-
     int i;
 
     for (i=0; i<bufferSize; i++) {
@@ -165,7 +160,8 @@ void read_config(void) {
     max_ops_per_second = config["max_ops_per_second"].as<int>();
     thread_count = config["thread_count"].as<int>();
     timeoutMsG = config["timeout"].as<int>();
-    retriesG = config["retries"].as<int>();
+    baseretries = config["retries"].as<int>();
+    retriesG = baseretries;
     if (config["use_ssl"].as<int>() > 0) {
         s3proto = S3ProtocolHTTPS;
         std::cout << "Using SSL" << std::endl;
